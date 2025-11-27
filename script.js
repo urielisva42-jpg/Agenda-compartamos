@@ -359,4 +359,35 @@ document.addEventListener("DOMContentLoaded", () => {
     if (campoFecha) {
         campoFecha.value = obtenerFechaHoy();
     }
+    // -------- CALCULADORA DE CICLOS --------
+const formCalculadora = document.querySelector('#form-calculadora-ciclos');
+const inputFechaInicioCiclo = document.querySelector('#fecha-inicio-ciclo');
+const spanFinCiclo = document.querySelector('#resultado-fin-ciclo');
+const spanSemana13 = document.querySelector('#resultado-semana-13');
+
+if (formCalculadora) {
+  formCalculadora.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const valorFecha = inputFechaInicioCiclo.value;
+    if (!valorFecha) {
+      alert('Ingresa la fecha de inicio del ciclo.');
+      return;
+    }
+
+    const fechaInicio = new Date(valorFecha);
+
+    const fechaFin = new Date(fechaInicio);
+    fechaFin.setDate(fechaFin.getDate() + 16 * 7);
+
+    const fechaSemana13 = new Date(fechaInicio);
+    fechaSemana13.setDate(fechaSemana13.getDate() + 12 * 7);
+
+    const opciones = { day: '2-digit', month: 'long', year: 'numeric' };
+    const locale = 'es-MX';
+
+    spanFinCiclo.textContent = fechaFin.toLocaleDateString(locale, opciones);
+    spanSemana13.textContent = fechaSemana13.toLocaleDateString(locale, opciones);
+  });
+}
 });
