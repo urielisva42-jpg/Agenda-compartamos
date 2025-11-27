@@ -306,11 +306,11 @@ th {
     display: none;
 }
 
-/* Efecto vidrio en paneles y pie sobre fondo oscuro */
+/* Efecto vidrio en paneles y pie sobre fondo oscuro 
 .panel, .pie {
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(6px);
-}
+} */
 
 /* Responsivo */
 @media (max-width: 600px) {
