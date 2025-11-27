@@ -1,0 +1,20 @@
+{
+  "name": "Agenda Asesor Uriel",
+  "short_name": "Agenda Uriel",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1b0016",
+  "theme_color": "#b0005a",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

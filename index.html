@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda de trabajo - Asesor Uriel</title>
+
+    <!-- Iconos e instalación tipo app -->
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#b0005a">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="encabezado">
+        <div class="encabezado-izquierda">
+            <img src="logo-asesoruriel.png"
+                 alt="Asesor Uriel - Compartamos Banco"
+                 class="logo-encabezado">
+
+            <div>
+                <h1>Agenda de trabajo - Asesor Uriel</h1>
+                <p class="subtitulo">Herramienta sencilla para organizar tu día de trabajo en Compartamos Banco.</p>
+            </div>
+        </div>
+
+        <div class="actividades-hoy">
+            <h2>Actividades de hoy</h2>
+            <ul id="lista-actividades-hoy">
+                <li class="texto-secundario">Aún no hay actividades para hoy.</li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="contenido">
+        <section class="acciones-principales">
+            <button class="boton-accion" data-panel="panel-cp">
+                Buscar Código Postal
+            </button>
+            <button class="boton-accion" data-panel="panel-oficios">
+                Catálogo de Oficios
+            </button>
+            <button class="boton-accion" data-panel="panel-numeros">
+                Números Oficiales de Veracruz
+            </button>
+            <button class="boton-accion" data-panel="panel-calendario">
+                Calendario
+            </button>
+        </section>
+
+        <section id="panel-cp" class="panel">
+            <h2>Buscar Código Postal</h2>
+            <p class="texto-secundario">
+                Escribe un código postal o el nombre de una colonia para buscar en el catálogo precargado.
+            </p>
+            <div class="buscador">
+                <input type="text" id="input-cp" placeholder="Ej. 91700 o Centro">
+                <button id="btn-buscar-cp">Buscar</button>
+            </div>
+            <div class="resultados">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>C.P.</th>
+                            <th>Colonia</th>
+                            <th>Municipio</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-cp">
+                        <!-- Resultados de búsqueda -->
+                    </tbody>
+                </table>
+                <p id="cp-sin-resultados" class="texto-secundario oculto">No se encontraron resultados.</p>
+            </div>
+        </section>
+
+        <section id="panel-oficios" class="panel oculto">
+            <h2>Catálogo de Oficios</h2>
+            <p class="texto-secundario">
+                Consulta oficios comunes de nuestros clientes para clasificar mejor tus visitas y actividades.
+            </p>
+            <div class="buscador">
+                <input type="text" id="input-oficios" placeholder="Buscar oficio (ej. Comerciante)">
+            </div>
+            <ul id="lista-oficios" class="lista-simple">
+                <!-- Oficios precargados -->
+            </ul>
+        </section>
+
+        <section id="panel-numeros" class="panel oculto">
+            <h2>Números Oficiales de Veracruz</h2>
+            <p class="texto-secundario">
+                Números de contacto útiles en el estado de Veracruz. Recuerda verificar siempre antes de compartirlos con un cliente.
+            </p>
+            <div class="buscador">
+                <input type="text" id="input-numeros" placeholder="Buscar por institución o tipo de número">
+            </div>
+            <ul id="lista-numeros" class="lista-simple">
+                <!-- Números oficiales precargados -->
+            </ul>
+        </section>
+
+        <section id="panel-calendario" class="panel oculto">
+            <h2>Calendario de actividades</h2>
+            <p class="texto-secundario">
+                Registra tus actividades para dar seguimiento a clientes, juntas y tareas internas.
+            </p>
+            <form id="form-actividad" class="formulario">
+                <div class="campo-formulario">
+                    <label for="fecha-actividad">Fecha</label>
+                    <input type="date" id="fecha-actividad" required>
+                </div>
+                <div class="campo-formulario">
+                    <label for="hora-actividad">Hora</label>
+                    <input type="time" id="hora-actividad">
+                </div>
+                <div class="campo-formulario">
+                    <label for="titulo-actividad">Título</label>
+                    <input type="text" id="titulo-actividad" placeholder="Ej. Visita a grupo en campo" required>
+                </div>
+                <div class="campo-formulario">
+                    <label for="descripcion-actividad">Descripción</label>
+                    <textarea id="descripcion-actividad" rows="3" placeholder="Detalles adicionales (dirección, nombre del grupo, etc.)"></textarea>
+                </div>
+                <button type="submit" class="boton-primario">Agregar actividad</button>
+            </form>
+
+            <h3>Actividades registradas</h3>
+            <div class="resultados">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Título</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-actividades">
+                        <!-- Actividades registradas -->
+                    </tbody>
+                </table>
+                <p id="actividades-sin-registro" class="texto-secundario">Aún no has registrado actividades.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="pie">
+        <p>Agenda no oficial de uso interno. Adáptala a tu forma de trabajo.</p>
+    </footer>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
