@@ -1,4 +1,8 @@
-// Datos precargados: códigos postales de ejemplo (principalmente Veracruz)
+// =======================
+// Datos precargados
+// =======================
+
+// Códigos postales (ejemplos, puedes agregar más)
 const CODIGOS_POSTALES = [
     { cp: "91700", colonia: "Centro", municipio: "Veracruz", estado: "Veracruz" },
     { cp: "91910", colonia: "Reforma", municipio: "Veracruz", estado: "Veracruz" },
@@ -10,7 +14,7 @@ const CODIGOS_POSTALES = [
     { cp: "54000", colonia: "Tlalnepantla Centro", municipio: "Tlalnepantla de Baz", estado: "Estado de México" }
 ];
 
-// Oficios precargados de clientes típicos
+// Oficios (ejemplos)
 const OFICIOS = [
     { nombre: "Comerciante", descripcion: "Venta de productos diversos en mercado, tianguis o local." },
     { nombre: "Tortillera", descripcion: "Elaboración y venta de tortillas de maíz o harina." },
@@ -22,22 +26,24 @@ const OFICIOS = [
     { nombre: "Panadero", descripcion: "Elaboración y venta de pan y repostería." }
 ];
 
-// Números oficiales de Veracruz (ejemplos)
+// Números oficiales Veracruz (ejemplos)
 const NUMEROS_OFICIALES = [
     { nombre: "Emergencias (nacional)", telefono: "911", descripcion: "Atención a emergencias médicas, de seguridad y protección civil." },
     { nombre: "Protección Civil Veracruz", telefono: "01 800 716 3410", descripcion: "Reporte de riesgos, desastres naturales y apoyo en contingencias." },
     { nombre: "Cruz Roja Veracruz", telefono: "229 932 1212", descripcion: "Servicio de ambulancias y atención médica de emergencia (ejemplo)." },
     { nombre: "Locatel Veracruz (ejemplo)", telefono: "800 123 4567", descripcion: "Orientación ciudadana e información de servicios públicos." },
-    { nombre: "Gobierno del Estado de Veracruz (conmutador)", telefono: "228 841 7700", descripcion: "Conmutador general del Gobierno del Estado (ejemplo de referencia)." },
+    { nombre: "Gobierno del Estado de Veracruz (conmutador)", telefono: "228 841 7700", descripcion: "Conmutador general del Gobierno del Estado (ejemplo)." },
     { nombre: "Denuncia anónima", telefono: "089", descripcion: "Línea para denuncias anónimas de delitos." }
 ];
 
-// Clave para almacenar actividades en localStorage
-const CLAVE_EVENTOS = "agenda_compartamos_eventos";
+// =======================
+// Agenda: almacenamiento
+// =======================
 
+const CLAVE_EVENTOS = "agenda_compartamos_eventos";
 let eventos = [];
 
-// Utilidad: obtener fecha de hoy en formato YYYY-MM-DD
+// Fecha de hoy en formato YYYY-MM-DD
 function obtenerFechaHoy() {
     const hoy = new Date();
     const año = hoy.getFullYear();
@@ -46,7 +52,6 @@ function obtenerFechaHoy() {
     return `${año}-${mes}-${dia}`;
 }
 
-// Cargar eventos desde localStorage
 function cargarEventos() {
     try {
         const guardado = localStorage.getItem(CLAVE_EVENTOS);
@@ -57,7 +62,6 @@ function cargarEventos() {
     }
 }
 
-// Guardar eventos en localStorage
 function guardarEventos() {
     try {
         localStorage.setItem(CLAVE_EVENTOS, JSON.stringify(eventos));
@@ -66,7 +70,10 @@ function guardarEventos() {
     }
 }
 
-// Renderizar la tabla completa de actividades
+// =======================
+// Renderizar actividades
+// =======================
+
 function renderizarActividades() {
     const cuerpoTabla = document.getElementById("tabla-actividades");
     const mensajeSinRegistro = document.getElementById("actividades-sin-registro");
@@ -110,7 +117,7 @@ function renderizarActividades() {
     }
 }
 
-// Renderizar actividades solo del día de hoy en el encabezado
+// Actividades de hoy en el encabezado
 function renderizarActividadesDeHoy() {
     const listaHoy = document.getElementById("lista-actividades-hoy");
     listaHoy.innerHTML = "";
@@ -138,9 +145,13 @@ function renderizarActividadesDeHoy() {
     }
 }
 
-// Manejar envío del formulario de actividades
+// =======================
+// Formularios
+// =======================
+
 function configurarFormularioActividades() {
     const formulario = document.getElementById("form-actividad");
+    if (!formulario) return;
 
     formulario.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -173,7 +184,10 @@ function configurarFormularioActividades() {
     });
 }
 
-// Mostrar y ocultar paneles según el botón presionado
+// =======================
+// Paneles (botones)
+// =======================
+
 function configurarBotonesPaneles() {
     const botones = document.querySelectorAll(".boton-accion");
     const paneles = document.querySelectorAll(".panel");
@@ -192,12 +206,17 @@ function configurarBotonesPaneles() {
     });
 }
 
-// Búsqueda de códigos postales
+// =======================
+// Buscador Códigos Postales
+// =======================
+
 function configurarBuscadorCP() {
     const input = document.getElementById("input-cp");
     const boton = document.getElementById("btn-buscar-cp");
     const cuerpoTabla = document.getElementById("tabla-cp");
     const mensajeSinResultados = document.getElementById("cp-sin-resultados");
+
+    if (!input || !boton) return;
 
     function realizarBusqueda() {
         const termino = input.value.trim().toLowerCase();
@@ -248,13 +267,17 @@ function configurarBuscadorCP() {
     boton.addEventListener("click", realizarBusqueda);
     input.addEventListener("keyup", () => realizarBusqueda());
 
-    realizarBusqueda();
+    realizarBusqueda(); // mostrar todo al inicio
 }
 
-// Mostrar oficios en lista con filtro
+// =======================
+// Listado de oficios
+// =======================
+
 function configurarListadoOficios() {
     const input = document.getElementById("input-oficios");
     const lista = document.getElementById("lista-oficios");
+    if (!input || !lista) return;
 
     function renderizar(termino = "") {
         lista.innerHTML = "";
@@ -265,6 +288,14 @@ function configurarListadoOficios() {
             of.nombre.toLowerCase().includes(t) ||
             of.descripcion.toLowerCase().includes(t)
         );
+
+        if (!filtrados.length) {
+            const li = document.createElement("li");
+            li.className = "texto-secundario";
+            li.textContent = "No se encontraron oficios con ese criterio.";
+            lista.appendChild(li);
+            return;
+        }
 
         for (const ofi of filtrados) {
             const li = document.createElement("li");
@@ -279,23 +310,20 @@ function configurarListadoOficios() {
             li.appendChild(span);
             lista.appendChild(li);
         }
-
-        if (!filtrados.length) {
-            const li = document.createElement("li");
-            li.className = "texto-secundario";
-            li.textContent = "No se encontraron oficios con ese criterio.";
-            lista.appendChild(li);
-        }
     }
 
     input.addEventListener("input", () => renderizar(input.value));
     renderizar();
 }
 
-// Mostrar números oficiales en lista con filtro
+// =======================
+// Listado de números
+// =======================
+
 function configurarListadoNumeros() {
     const input = document.getElementById("input-numeros");
     const lista = document.getElementById("lista-numeros");
+    if (!input || !lista) return;
 
     function renderizar(termino = "") {
         lista.innerHTML = "";
@@ -306,6 +334,14 @@ function configurarListadoNumeros() {
             num.nombre.toLowerCase().includes(t) ||
             num.descripcion.toLowerCase().includes(t)
         );
+
+        if (!filtrados.length) {
+            const li = document.createElement("li");
+            li.className = "texto-secundario";
+            li.textContent = "No se encontraron números con ese criterio.";
+            lista.appendChild(li);
+            return;
+        }
 
         for (const num of filtrados) {
             const li = document.createElement("li");
@@ -321,37 +357,32 @@ function configurarListadoNumeros() {
             li.appendChild(span);
             lista.appendChild(li);
         }
-
-        if (!filtrados.length) {
-            const li = document.createElement("li");
-            li.className = "texto-secundario";
-            li.textContent = "No se encontraron números con ese criterio.";
-            lista.appendChild(li);
-        }
     }
 
     input.addEventListener("input", () => renderizar(input.value));
     renderizar();
 }
 
-// Calculadora de ciclos: ciclo de 16 semanas, firma en semana 13
+// =======================
+// Calculadora de ciclos
+// =======================
+
 function configurarCalculadoraCiclos() {
     const formulario = document.getElementById("form-ciclo");
     const inputFecha = document.getElementById("fecha-inicio-ciclo");
     const contResultados = document.getElementById("resultados-ciclo");
     const spanFinCiclo = document.getElementById("fecha-fin-ciclo");
     const spanSemana13 = document.getElementById("fecha-semana-13");
-    const mensajeError = document.getElementById("mensaje-error-ciclo");
     const spanRecordatorio = document.getElementById("texto-recordatorio");
+    const mensajeError = document.getElementById("mensaje-error-ciclo");
     const botonAgregar = document.getElementById("btn-agregar-semana13");
 
     if (!formulario || !inputFecha) return;
 
-    // Guardamos la última semana 13 calculada en formato ISO para el calendario
     let ultimaSemana13ISO = null;
     let ultimaDescripcionBase = "";
 
-    // Preseleccionar hoy como fecha por defecto
+    // Preseleccionar hoy
     inputFecha.value = obtenerFechaHoy();
 
     function sumarDias(fecha, dias) {
@@ -389,7 +420,6 @@ function configurarCalculadoraCiclos() {
             return;
         }
 
-        // Semana 1 = inicio
         // Semana 16 = inicio + 15*7 días
         // Semana 13 = inicio + 12*7 días
         const finCiclo = sumarDias(inicio, 15 * 7);
@@ -398,11 +428,9 @@ function configurarCalculadoraCiclos() {
         spanFinCiclo.textContent = formatearFecha(finCiclo);
         spanSemana13.textContent = formatearFecha(semana13);
 
-        // Guardamos datos para el botón "Agregar al calendario"
         ultimaSemana13ISO = formatearISO(semana13);
         ultimaDescripcionBase = `Ciclo iniciado el ${formatearFecha(inicio)}.`;
 
-        // Texto de recordatorio sugerido
         spanRecordatorio.textContent =
             `Programar visita para firma de renovación en semana 13: ${formatearFecha(semana13)}.`;
 
@@ -431,11 +459,41 @@ function configurarCalculadoraCiclos() {
             renderizarActividadesDeHoy();
 
             alert("Actividad de semana 13 agregada al calendario.");
+
+            // Notificación (si el usuario dio permiso)
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("Semana 13 programada", {
+                    body: `Firma de renovación el ${spanSemana13.textContent}`,
+                    icon: "icon-192.png"
+                });
+            }
         });
     }
 }
 
+// =======================
+// Notificaciones
+// =======================
+
+function pedirPermisoNotificaciones() {
+    if (!("Notification" in window)) return;
+
+    if (Notification.permission === "default") {
+        Notification.requestPermission().then(perm => {
+            if (perm === "granted") {
+                new Notification("Notificaciones activadas", {
+                    body: "Podrás recibir recordatorios de tu agenda.",
+                    icon: "icon-192.png"
+                });
+            }
+        });
+    }
+}
+
+// =======================
 // Inicialización general
+// =======================
+
 document.addEventListener("DOMContentLoaded", () => {
     cargarEventos();
     configurarFormularioActividades();
@@ -451,4 +509,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (campoFecha) {
         campoFecha.value = obtenerFechaHoy();
     }
+
+    pedirPermisoNotificaciones();
 });
+
+// =======================
+// Service Worker (PWA)
+// =======================
+
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js")
+        .then(() => console.log("Service Worker registrado"))
+        .catch(err => console.log("Error al registrar SW:", err));
+}
