@@ -1,4 +1,3 @@
-
 // Datos precargados: códigos postales de ejemplo (principalmente Veracruz)
 const CODIGOS_POSTALES = [
     { cp: "91700", colonia: "Centro", municipio: "Veracruz", estado: "Veracruz" },
@@ -23,7 +22,7 @@ const OFICIOS = [
     { nombre: "Panadero", descripcion: "Elaboración y venta de pan y repostería." }
 ];
 
-// Números oficiales de Veracruz (ejemplos, siempre verificar contra fuentes oficiales)
+// Números oficiales de Veracruz (ejemplos)
 const NUMEROS_OFICIALES = [
     { nombre: "Emergencias (nacional)", telefono: "911", descripcion: "Atención a emergencias médicas, de seguridad y protección civil." },
     { nombre: "Protección Civil Veracruz", telefono: "01 800 716 3410", descripcion: "Reporte de riesgos, desastres naturales y apoyo en contingencias." },
@@ -81,7 +80,6 @@ function renderizarActividades() {
         mensajeSinRegistro.classList.add("oculto");
     }
 
-    // Copia ordenada por fecha y hora
     const ordenados = [...eventos].sort((a, b) => {
         const da = (a.fecha || "") + " " + (a.hora || "");
         const db = (b.fecha || "") + " " + (b.hora || "");
@@ -171,7 +169,7 @@ function configurarFormularioActividades() {
         renderizarActividadesDeHoy();
 
         formulario.reset();
-        document.getElementById("fecha-actividad").value = fecha; // opcional: mantener fecha
+        document.getElementById("fecha-actividad").value = fecha;
     });
 }
 
@@ -248,15 +246,8 @@ function configurarBuscadorCP() {
     }
 
     boton.addEventListener("click", realizarBusqueda);
-    input.addEventListener("keyup", (e) => {
-        if (e.key === "Enter") {
-            realizarBusqueda();
-        } else {
-            realizarBusqueda();
-        }
-    });
+    input.addEventListener("keyup", () => realizarBusqueda());
 
-    // Mostrar todo al inicio
     realizarBusqueda();
 }
 
@@ -343,6 +334,107 @@ function configurarListadoNumeros() {
     renderizar();
 }
 
+// Calculadora de ciclos: ciclo de 16 semanas, firma en semana 13
+function configurarCalculadoraCiclos() {
+    const formulario = document.getElementById("form-ciclo");
+    const inputFecha = document.getElementById("fecha-inicio-ciclo");
+    const contResultados = document.getElementById("resultados-ciclo");
+    const spanFinCiclo = document.getElementById("fecha-fin-ciclo");
+    const spanSemana13 = document.getElementById("fecha-semana-13");
+    const mensajeError = document.getElementById("mensaje-error-ciclo");
+    const spanRecordatorio = document.getElementById("texto-recordatorio");
+    const botonAgregar = document.getElementById("btn-agregar-semana13");
+
+    if (!formulario || !inputFecha) return;
+
+    // Guardamos la última semana 13 calculada en formato ISO para el calendario
+    let ultimaSemana13ISO = null;
+    let ultimaDescripcionBase = "";
+
+    // Preseleccionar hoy como fecha por defecto
+    inputFecha.value = obtenerFechaHoy();
+
+    function sumarDias(fecha, dias) {
+        const f = new Date(fecha);
+        f.setDate(f.getDate() + dias);
+        return f;
+    }
+
+    function formatearFecha(fecha) {
+        const opciones = { year: "numeric", month: "2-digit", day: "2-digit" };
+        return fecha.toLocaleDateString("es-MX", opciones);
+    }
+
+    function formatearISO(fecha) {
+        const año = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+        const dia = String(fecha.getDate()).padStart(2, "0");
+        return `${año}-${mes}-${dia}`;
+    }
+
+    formulario.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const valor = inputFecha.value;
+        if (!valor) {
+            mensajeError.classList.remove("oculto");
+            contResultados.classList.add("oculto");
+            return;
+        }
+
+        const inicio = new Date(valor + "T00:00:00");
+        if (isNaN(inicio.getTime())) {
+            mensajeError.classList.remove("oculto");
+            contResultados.classList.add("oculto");
+            return;
+        }
+
+        // Semana 1 = inicio
+        // Semana 16 = inicio + 15*7 días
+        // Semana 13 = inicio + 12*7 días
+        const finCiclo = sumarDias(inicio, 15 * 7);
+        const semana13 = sumarDias(inicio, 12 * 7);
+
+        spanFinCiclo.textContent = formatearFecha(finCiclo);
+        spanSemana13.textContent = formatearFecha(semana13);
+
+        // Guardamos datos para el botón "Agregar al calendario"
+        ultimaSemana13ISO = formatearISO(semana13);
+        ultimaDescripcionBase = `Ciclo iniciado el ${formatearFecha(inicio)}.`;
+
+        // Texto de recordatorio sugerido
+        spanRecordatorio.textContent =
+            `Programar visita para firma de renovación en semana 13: ${formatearFecha(semana13)}.`;
+
+        mensajeError.classList.add("oculto");
+        contResultados.classList.remove("oculto");
+    });
+
+    if (botonAgregar) {
+        botonAgregar.addEventListener("click", () => {
+            if (!ultimaSemana13ISO) {
+                alert("Primero calcula el ciclo para saber la fecha de la semana 13.");
+                return;
+            }
+
+            const nuevoEvento = {
+                id: Date.now(),
+                fecha: ultimaSemana13ISO,
+                hora: "",
+                titulo: "Firma documentación de renovación (semana 13)",
+                descripcion: ultimaDescripcionBase
+            };
+
+            eventos.push(nuevoEvento);
+            guardarEventos();
+            renderizarActividades();
+            renderizarActividadesDeHoy();
+
+            alert("Actividad de semana 13 agregada al calendario.");
+        });
+    }
+}
+
 // Inicialización general
 document.addEventListener("DOMContentLoaded", () => {
     cargarEventos();
@@ -351,43 +443,12 @@ document.addEventListener("DOMContentLoaded", () => {
     configurarBuscadorCP();
     configurarListadoOficios();
     configurarListadoNumeros();
+    configurarCalculadoraCiclos();
     renderizarActividades();
     renderizarActividadesDeHoy();
 
-    // Por comodidad, preseleccionar hoy en el calendario
     const campoFecha = document.getElementById("fecha-actividad");
     if (campoFecha) {
         campoFecha.value = obtenerFechaHoy();
     }
-    // -------- CALCULADORA DE CICLOS --------
-const formCalculadora = document.querySelector('#form-calculadora-ciclos');
-const inputFechaInicioCiclo = document.querySelector('#fecha-inicio-ciclo');
-const spanFinCiclo = document.querySelector('#resultado-fin-ciclo');
-const spanSemana13 = document.querySelector('#resultado-semana-13');
-
-if (formCalculadora) {
-  formCalculadora.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const valorFecha = inputFechaInicioCiclo.value;
-    if (!valorFecha) {
-      alert('Ingresa la fecha de inicio del ciclo.');
-      return;
-    }
-
-    const fechaInicio = new Date(valorFecha);
-
-    const fechaFin = new Date(fechaInicio);
-    fechaFin.setDate(fechaFin.getDate() + 16 * 7);
-
-    const fechaSemana13 = new Date(fechaInicio);
-    fechaSemana13.setDate(fechaSemana13.getDate() + 12 * 7);
-
-    const opciones = { day: '2-digit', month: 'long', year: 'numeric' };
-    const locale = 'es-MX';
-
-    spanFinCiclo.textContent = fechaFin.toLocaleDateString(locale, opciones);
-    spanSemana13.textContent = fechaSemana13.toLocaleDateString(locale, opciones);
-  });
-}
 });
