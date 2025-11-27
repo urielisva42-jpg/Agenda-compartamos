@@ -2,9 +2,24 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agenda de trabajo - Asesor Uriel</title>
 
+    <!-- Vista móvil fija tipo app -->
+    <meta name="viewport" 
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- PWA modo app en iPhone -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <link rel="apple-touch-startup-image" href="splash.png">
+
+    <!-- Modo app Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="manifest.json">
+
+    <title>Agenda de trabajo - Asesor Uriel</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -29,34 +44,26 @@
     </header>
 
     <main class="contenido">
+
+        <!-- Botones principales -->
         <section class="acciones-principales">
-            <button class="boton-accion" data-panel="panel-cp">
-                Buscar Código Postal
-            </button>
-            <button class="boton-accion" data-panel="panel-oficios">
-                Catálogo de Oficios
-            </button>
-            <button class="boton-accion" data-panel="panel-numeros">
-                Números Oficiales de Veracruz
-            </button>
-            <button class="boton-accion" data-panel="panel-calendario">
-                Calendario
-            </button>
-            <button class="boton-accion" data-panel="panel-ciclos">
-                Calculadora de ciclos
-            </button>
+            <button class="boton-accion" data-panel="panel-cp">Buscar Código Postal</button>
+            <button class="boton-accion" data-panel="panel-oficios">Catálogo de Oficios</button>
+            <button class="boton-accion" data-panel="panel-numeros">Números Oficiales de Veracruz</button>
+            <button class="boton-accion" data-panel="panel-calendario">Calendario</button>
+            <button class="boton-accion" data-panel="panel-ciclos">Calculadora de ciclos</button>
         </section>
 
-        <!-- Panel Códigos Postales -->
+        <!-- Panel CP -->
         <section id="panel-cp" class="panel">
             <h2>Buscar Código Postal</h2>
-            <p class="texto-secundario">
-                Escribe un código postal o el nombre de una colonia para buscar en el catálogo precargado.
-            </p>
+            <p class="texto-secundario">Escribe un CP o colonia para buscar en el catálogo.</p>
+
             <div class="buscador">
                 <input type="text" id="input-cp" placeholder="Ej. 91700 o Centro">
                 <button id="btn-buscar-cp">Buscar</button>
             </div>
+
             <div class="resultados">
                 <table>
                     <thead>
@@ -67,9 +74,7 @@
                             <th>Estado</th>
                         </tr>
                     </thead>
-                    <tbody id="tabla-cp">
-                        <!-- Resultados de búsqueda -->
-                    </tbody>
+                    <tbody id="tabla-cp"></tbody>
                 </table>
                 <p id="cp-sin-resultados" class="texto-secundario oculto">No se encontraron resultados.</p>
             </div>
@@ -78,32 +83,107 @@
         <!-- Panel Oficios -->
         <section id="panel-oficios" class="panel oculto">
             <h2>Catálogo de Oficios</h2>
-            <p class="texto-secundario">
-                Consulta oficios comunes de nuestros clientes para clasificar mejor tus visitas y actividades.
-            </p>
+            <p class="texto-secundario">Consulta oficios comunes de clientes.</p>
+
             <div class="buscador">
-                <input type="text" id="input-oficios" placeholder="Buscar oficio (ej. Comerciante)">
+                <input type="text" id="input-oficios" placeholder="Buscar oficio">
             </div>
-            <ul id="lista-oficios" class="lista-simple">
-                <!-- Oficios precargados -->
-            </ul>
+
+            <ul id="lista-oficios" class="lista-simple"></ul>
         </section>
 
         <!-- Panel Números Oficiales -->
         <section id="panel-numeros" class="panel oculto">
             <h2>Números Oficiales de Veracruz</h2>
-            <p class="texto-secundario">
-                Números de contacto útiles en el estado de Veracruz. Recuerda verificar siempre antes de compartirlos con un cliente.
-            </p>
+            <p class="texto-secundario">Números útiles en Veracruz.</p>
+
             <div class="buscador">
-                <input type="text" id="input-numeros" placeholder="Buscar por institución o tipo de número">
+                <input type="text" id="input-numeros" placeholder="Buscar institución o número">
             </div>
-            <ul id="lista-numeros" class="lista-simple">
-                <!-- Números oficiales precargados -->
-            </ul>
+
+            <ul id="lista-numeros" class="lista-simple"></ul>
         </section>
 
         <!-- Panel Calendario -->
+        <section id="panel-calendario" class="panel oculto">
+            <h2>Calendario de actividades</h2>
+
+            <form id="form-actividad" class="formulario">
+                <div class="campo-formulario">
+                    <label>Fecha</label>
+                    <input type="date" id="fecha-actividad" required>
+                </div>
+
+                <div class="campo-formulario">
+                    <label>Hora</label>
+                    <input type="time" id="hora-actividad">
+                </div>
+
+                <div class="campo-formulario">
+                    <label>Título</label>
+                    <input type="text" id="titulo-actividad" required>
+                </div>
+
+                <div class="campo-formulario">
+                    <label>Descripción</label>
+                    <textarea id="descripcion-actividad"></textarea>
+                </div>
+
+                <button class="boton-primario" type="submit">Agregar actividad</button>
+            </form>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th><th>Hora</th><th>Título</th><th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-actividades"></tbody>
+            </table>
+
+            <p id="actividades-sin-registro" class="texto-secundario">Aún no tienes actividades.</p>
+        </section>
+
+        <!-- Panel Calculadora de ciclos -->
+        <section id="panel-ciclos" class="panel oculto">
+            <h2>Calculadora de ciclos (16 semanas)</h2>
+            <p class="texto-secundario">
+                Ingresa la fecha de inicio (semana 1).
+                Se calculará fin de ciclo (semana 16) y firma (semana 13).
+            </p>
+
+            <form id="form-ciclo" class="formulario formulario-ciclo">
+                <div class="campo-formulario">
+                    <label>Inicio del ciclo</label>
+                    <input type="date" id="fecha-inicio-ciclo" required>
+                </div>
+
+                <button type="submit" class="boton-primario">Calcular fechas</button>
+            </form>
+
+            <div id="resultados-ciclo" class="resultados-ciclo texto-secundario oculto">
+                <p><strong>Fin del ciclo:</strong> <span id="fecha-fin-ciclo"></span></p>
+                <p><strong>Semana 13 (firma):</strong> <span id="fecha-semana-13"></span></p>
+                <p><strong>Recordatorio:</strong> <span id="texto-recordatorio"></span></p>
+
+                <button id="btn-agregar-semana13" class="boton-primario boton-secundario">
+                    Agregar semana 13 al calendario
+                </button>
+            </div>
+
+            <p id="mensaje-error-ciclo" class="texto-secundario oculto">
+                Selecciona una fecha válida.
+            </p>
+        </section>
+    </main>
+
+    <footer class="pie">
+        Agenda no oficial del Asesor Uriel. Uso interno.
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>        <!-- Panel Calendario -->
         <section id="panel-calendario" class="panel oculto">
             <h2>Calendario de actividades</h2>
             <p class="texto-secundario">
